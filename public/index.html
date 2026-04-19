@@ -64,6 +64,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <a href="https://www.ay-akademi.com/" class="w3-bar-item w3-button w3-padding">Ay Akademi</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Tiktok</a> 
   <a href="#footer"  class="w3-bar-item w3-button w3-padding">Youtube</a>
+  <br>
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün</a> 
 
 </nav>
@@ -295,12 +296,16 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
       document.getElementById('yeni_urun_fiyat').value ='';
     }
     async function YeniUrunKaydet(){
-      var foto_ad_adres = await fb.ResimKaydet( document.getElementById('yeni_urun_foto1'),'');
-
-      var urun_bilgileri={tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
-      await fb.Kaydet(urun_bilgileri);
-      document.getElementById('yeni_urun').style.display='none';  
-      fb.UrunleriGetir();  
+      if(document.getElementById('yeni_urun_tipi').value.length > 3 && document.getElementById('yeni_urun_aciklama').value.length > 20 && document.getElementById('yeni_urun_fiyat').value.length > 0){
+       
+        var foto_ad_adres = await fb.ResimKaydet( document.getElementById('yeni_urun_foto1'), document.getElementById('yeni_urun_aciklama').value + ' ' + 'Doğal Taş' + document.getElementById('yeni_urun_tipi').value);
+        var urun_bilgileri={tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
+        await fb.Kaydet(urun_bilgileri);
+        document.getElementById('yeni_urun').style.display='none';  
+        fb.UrunleriGetir();  
+      }else{
+        alert('Tüm alanların doldurulması zorunludur.');
+      }
     }
     function LinkTik(veri){
       console.log(veri.innerHTML);

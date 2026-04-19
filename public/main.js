@@ -79,12 +79,12 @@ async function Kaydet(veri){
 
 window.fb.Kaydet=Kaydet;
 
-async function ResimKaydet(imgData,name){
+async function ResimKaydet(img,dosya_adi){
     const storage = getStorage();
-    var resim_adi=uye.uid+Math.floor(Math.random()*958678473)+'.jpeg';
+    var resim_adi=dosya_adi+Math.floor(Math.random()*958678473)+'.jpeg';
     const storageRef = ref(storage, resim_adi);
 
-    var base = await toBase64(imgData.files[0])
+    var base = await toBase64(img.files[0])
 
     uploadString(storageRef, base, 'data_url').then((snapshot) => {
         console.log('Uploaded a data_url string!');
