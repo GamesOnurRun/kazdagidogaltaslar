@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Doğal Taş Bileklik, Kolye</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script type="module" src="main.js"></script>
+  <title>Doğal Taş Bileklik, Kolye</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Doğal Taş Bileklik, Kolye">
+  <meta name="keywords" content="Doğal, Taş, Bileklik, Kolye">
+  <meta name="author" content="Onur Salih Çırak">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="module" src="main.js"></script>
 
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 
-<style>
-.w3-sidebar a {font-family: "Roboto", sans-serif}
-body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
-.swiper {
-  
-  height: 500px;
-}
+  <style>
+    .w3-sidebar a {font-family: "Roboto", sans-serif}
+    body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+    .swiper {
+      
+      height: 500px;
+    }
     .swiper-slide {
       background-position: center;
       background-size: cover;
@@ -36,7 +36,7 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
       height: 100%;
       object-fit: cover;
     }
-</style>
+  </style>
 </head>
 <body class="w3-content" style="max-width:1200px">
 
@@ -298,11 +298,13 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
     async function YeniUrunKaydet(){
       if(document.getElementById('yeni_urun_tipi').value.length > 3 && document.getElementById('yeni_urun_aciklama').value.length > 20 && document.getElementById('yeni_urun_fiyat').value.length > 0){
        
-        var foto_ad_adres = await fb.ResimKaydet( document.getElementById('yeni_urun_foto1'), document.getElementById('yeni_urun_aciklama').value + ' ' + 'Doğal Taş' + document.getElementById('yeni_urun_tipi').value);
-        var urun_bilgileri={tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
-        await fb.Kaydet(urun_bilgileri);
-        document.getElementById('yeni_urun').style.display='none';  
-        fb.UrunleriGetir();  
+        var foto_ad_adres = await fb.ResimKaydet( document.getElementById('yeni_urun_foto1'), document.getElementById('yeni_urun_aciklama').value + ' Doğal Taş ' + document.getElementById('yeni_urun_tipi').value);
+        if(foto_ad_adres !== false){
+          var urun_bilgileri = {tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
+          await fb.Kaydet(urun_bilgileri);
+          document.getElementById('yeni_urun').style.display='none';  
+          fb.UrunleriGetir();  
+        }
       }else{
         alert('Tüm alanların doldurulması zorunludur.');
       }

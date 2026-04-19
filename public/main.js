@@ -80,26 +80,42 @@ async function Kaydet(veri){
 window.fb.Kaydet=Kaydet;
 
 async function ResimKaydet(img,dosya_adi){
-    const storage = getStorage();
-    var resim_adi=dosya_adi+Math.floor(Math.random()*958678473)+'.jpeg';
-    const storageRef = ref(storage, resim_adi);
+    try {
+        if(img.files[0].type!=='' && img.files[0].type.substr(0,5)==='image'){
+            const storage = getStorage();
+            var resim_adi = DosyaAdiDuzenle(dosya_adi) + Math.floor(Math.random()*958678473)+'.'+img.files[0].type.substr(6);
+            const storageRef = ref(storage, resim_adi);
 
-    var base = await toBase64(img.files[0])
+            var base = await toBase64(img.files[0])
 
-    uploadString(storageRef, base, 'data_url').then((snapshot) => {
-        console.log('Uploaded a data_url string!');
-    });
-    return resim_adi;
+            uploadString(storageRef, base, 'data_url').then((snapshot) => {
+                console.log('Uploaded a data_url string!');
+            });
+            return resim_adi;
+        }else{
+            alert('Seçili dosya fotoğraf olmalıdır.');
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+        alert('Hata, tekrar deneyiniz.');
+        return false;
+    }
+
 }
 window.fb.ResimKaydet=ResimKaydet;
 
+function DosyaAdiDuzenle(veri){
+    veri = veri.replaceAll(' ','_');
+    veri = veri.replaceAll('.','_');
+    return veri;
+}
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
 });
-
 
 function Cikis(){
     //document.getElementById('fbbar').innerHTML='<div><img src="https://ongame.run/gelistirme/yukleniyor.svg"></div>';
