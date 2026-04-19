@@ -217,19 +217,25 @@ function convertTimestamp(timestamp) {
       return date;
 }
 
+var urunler=[];
 function UrunleriGetir(){
-    console.log('asdf')
-    var urunler=[];
-    const q = query(collection(db, "urunler"));
+    const q = query(collection(db, "urunler"),orderBy("tarih", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
         snapshot.docChanges().forEach((change) => {
             if (change.type === "added" || change.type === "modified") {
-                urunler.push(`
-                    <div class="w3-container">
-                        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${change.doc.data()['foto1']}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%">
-                        <p>${change.doc.data()['aciklama']}<br><b>${change.doc.data()['fiyat']}</b></p>
-                    </div>    
-                `);
+                var veri = change.doc.data();
+                veri.id = change.doc.id;
+                var ekle=true;
+                for (let i = 0; i < urunler.length; i++) {
+                    if(urunler[i].id===veri.id){
+                        ekle=false;
+                        break;
+                    }
+                }
+                if(ekle===true){
+                    urunler.push(veri);
+                }
+
                 //if(convertTimestamp(change.doc.data()['tarih']).indexOf('Sn')>-1){
                 //    document.getElementById('urunler').innerHTML+='<div id="online_'+change.doc.id+'" class="'+(convertTimestamp(change.doc.data()['son']).indexOf('Sn')>-1?'online_online':'online_offline')+'">'+change.doc.data()['uyeAdi']+' '+convertTimestamp(change.doc.data()['son'])+'</div>'+document.getElementById('online_text').innerHTML;
                 //}else{
@@ -237,19 +243,41 @@ function UrunleriGetir(){
                 //}               
             }
         });
-
-        var urunlerHTML='';
-        for (let i = 0; i < urunler.length; i++) {
-            if((i+1)===urunler.length){
-                urunlerHTML+='<div class="w3-col l3 s6">' + urunler[i] + '</div>';
-            }else{
-                urunlerHTML+='<div class="w3-col l3 s6">' + urunler[i] + urunler[i + 1] + '</div>';
-                i++;
-            }
-        }
-        document.getElementById('urunler').innerHTML=urunlerHTML;
+        console.log(urunler);
+        UrunleriEkranaBas()
     });
-
-
 }
 window.fb.UrunleriGetir=UrunleriGetir;
+
+function UrunleriEkranaBas(){
+    var urunler_list=[];
+    for (let i = urunler.length-1; i > -1; i--) {
+        if(filtre_tipi==='' || filtre_tipi===urunler[i].tipi){
+            urunler_list.push(`
+                <div class="w3-container urun">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%">
+                    <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}</b></p>
+                </div>    
+            `);
+        }
+    }
+    
+    var urunlerHTML='';
+    for (let i = 0; i < urunler_list.length; i++) {
+        if((i+1)===urunler_list.length){
+            urunlerHTML+='<div class="w3-col l3 s6">' + urunler_list[i] + '</div>';
+        }else{
+            urunlerHTML+='<div class="w3-col l3 s6">' + urunler_list[i] + urunler_list[i + 1] + '</div>';
+            i++;
+        }
+    }
+    document.getElementById('urunler').innerHTML=urunlerHTML;
+    //unsubscribe();
+}
+
+var filtre_tipi='';
+function UrunleriFiltrele(veri){
+    filtre_tipi=veri;
+    UrunleriEkranaBas();
+}
+window.fb.UrunleriFiltrele=UrunleriFiltrele;

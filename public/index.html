@@ -36,6 +36,14 @@
       height: 100%;
       object-fit: cover;
     }
+
+    .urun img{
+      aspect-ratio: 8 / 12;
+      object-fit: cover;
+    }
+    .urun p{
+      height:88px
+    }
   </style>
 </head>
 <body class="w3-content" style="max-width:1200px">
@@ -71,7 +79,7 @@
 
 <!-- Top menu on small screens -->
 <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
-  <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
+  <div class="w3-bar-item w3-padding-24 w3-wide">DOĞAL TAŞ</div>
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
 </header>
 
@@ -86,7 +94,7 @@
   
   <!-- Top header -->
   <header class="w3-container w3-xlarge">
-    <p class="w3-left">Doğal Taş Bileklikler</p>
+    <p class="w3-left" id="sayfa_baslik">Doğal Taş Bileklikler</p>
     <p class="w3-right">
       <i class="fa fa-shopping-cart w3-margin-right"></i>
       <i class="fa fa-search"></i>
@@ -303,7 +311,7 @@
           var urun_bilgileri = {tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
           await fb.Kaydet(urun_bilgileri);
           document.getElementById('yeni_urun').style.display='none';  
-          fb.UrunleriGetir();  
+          //fb.UrunleriGetir();  
         }
       }else{
         alert('Tüm alanların doldurulması zorunludur.');
@@ -318,6 +326,7 @@
           linkler[i].classList.remove('w3-light-grey');
         }
       }
+      fb.UrunleriFiltrele( veri.innerHTML );
       veri.innerHTML = '<i class="fa fa-caret-right w3-margin-right"></i>' + veri.innerHTML;
       veri.classList.add('w3-light-grey');
 
