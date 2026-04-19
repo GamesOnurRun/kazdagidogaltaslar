@@ -251,14 +251,16 @@ window.fb.UrunleriGetir=UrunleriGetir;
 
 function UrunleriEkranaBas(){
     var urunler_list=[];
+    var urun_say=0;
     for (let i = urunler.length-1; i > -1; i--) {
         if(filtre_tipi==='' || filtre_tipi===urunler[i].tipi){
             urunler_list.push(`
-                <div class="w3-container urun">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%">
+                <div class="w3-container urun" onclick="UrunTik('${urunler[i].id}')">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
                     <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}</b></p>
                 </div>    
             `);
+            urun_say++;
         }
     }
     
@@ -270,8 +272,14 @@ function UrunleriEkranaBas(){
             urunlerHTML+='<div class="w3-col l3 s6">' + urunler_list[i] + urunler_list[i + 1] + '</div>';
             i++;
         }
+        if(filtre_tipi==='' && i===7){
+            break;
+
+        }
     }
+    document.getElementById('liste_aciklama').innerHTML = urun_say===0?'Ürün Bulunamadı.':(urun_say + ' Ürün Bulundu.');
     document.getElementById('urunler').innerHTML=urunlerHTML;
+
     //unsubscribe();
 }
 
@@ -281,3 +289,28 @@ function UrunleriFiltrele(veri){
     UrunleriEkranaBas();
 }
 window.fb.UrunleriFiltrele=UrunleriFiltrele;
+
+function TekUrun(veri){
+    var urun=null;
+    for (let i = 0; i < urunler.length; i++) {
+        if(urunler[i].id===veri){
+            urun=urunler[i];
+            break;
+        }  
+    }
+    document.getElementById('tek_urun_ic').innerHTML=
+    `
+        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
+        <p style="width:19%;float:right;font-size: 18px;height: auto !important;    background-color: black;    color: white;    padding: 1%;    margin: 0;">
+            ${urun.aciklama}
+            <br>
+            <br>
+            <b>${urun.fiyat}₺</b>
+            <br>
+            <br>
+            <a href="#" class="w3-button w3-black w3-padding-large w3-large"><i class="fa fa-shopping-cart"></i></a>
+        </p>
+    `;
+
+}
+window.fb.TekUrun=TekUrun;

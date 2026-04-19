@@ -37,6 +37,9 @@
       object-fit: cover;
     }
 
+    #urunler{
+      min-height:300px;
+    }
     .urun img{
       aspect-ratio: 8 / 12;
       object-fit: cover;
@@ -45,6 +48,8 @@
       height:88px
     }
   </style>
+
+  
 </head>
 <body class="w3-content" style="max-width:1200px">
 
@@ -52,12 +57,13 @@
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
   <div class="w3-container w3-display-container w3-padding-16">
     <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
-    <h3 class="w3-wide"><b>DOĞAL TAŞ</b></h3>
+    <h3 class="w3-wide"><a href="#" onclick="AnaSayfa()" class="w3-bar-item w3-button" title="Doğal Taş Bileklik"><b>DOĞAL TAŞ</b></a></h3>
   </div>
   <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold" id="filtreler">
     <a href="#" onclick="LinkTik(this)" class="w3-bar-item w3-button" title="Doğal Taş Bileklik">Bileklik</a>
     <a href="#" onclick="LinkTik(this)" class="w3-bar-item w3-button" title="Doğal Taş Kolye">Kolye</a>
     <a href="#" onclick="LinkTik(this)" class="w3-bar-item w3-button" title="Doğal Taş Kütle">Kütle</a>
+    <a href="#" onclick="LinkTik(this)" class="w3-bar-item w3-button" title="Doğal Taş Kütle">Sarkaç</a>
 
     <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn">
       Piramitler <i class="fa fa-caret-down"></i>
@@ -79,7 +85,14 @@
 
 <!-- Top menu on small screens -->
 <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
-  <div class="w3-bar-item w3-padding-24 w3-wide">DOĞAL TAŞ</div>
+  <div class="w3-bar-item w3-padding-24 w3-wide">
+
+
+    <a href="#" onclick="AnaSayfa()" class="w3-bar-item w3-button" title="Doğal Taş Bileklik">DOĞAL TAŞ</a>
+
+
+
+  </div>
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
 </header>
 
@@ -102,7 +115,7 @@
   </header>
 
   <!-- Image header -->
-   <div class="swiper mySwiper">
+   <div class="swiper mySwiper" id="slayt">
   <!-- Additional required wrapper -->
   <div class="swiper-wrapper">
     <!-- Slides -->
@@ -150,8 +163,8 @@
 </div>
 
 
-  <div class="w3-container w3-text-grey" id="jeans">
-    <p>8 items</p>
+  <div class="w3-container w3-text-grey">
+    <p id="liste_aciklama">8 urun</p>
   </div>
 
   <!-- Product grid -->
@@ -283,14 +296,34 @@
   <div class="w3-modal-content w3-animate-zoom" style="padding:32px">
     <div class="w3-container w3-white w3-center">
       <i onclick="document.getElementById('yeni_urun').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
-      <h2 class="w3-wide">YENİ ÜRÜN OLUŞTUR</h2>
+      <h2 class="w3-wide">YENİ ÜRÜN</h2>
       <p>Join our mailing list to receive updates on new arrivals and special offers.</p>
-      <p><input id="yeni_urun_tipi" class="w3-input w3-border" type="text" placeholder="Ürün Tipi"></p>
-      <p><input id="yeni_urun_aciklama" class="w3-input w3-border" type="text" placeholder="Açıklama"></p>
-      <p><input id="yeni_urun_fiyat" class="w3-input w3-border" type="text" placeholder="Fiyat"></p>
-      <p><input id="yeni_urun_foto1" class="w3-input w3-border" type="file" placeholder="Ürün Görseli"></p>
+      <p><input id="yeni_urun_tipi" class="w3-input w3-border" type="text" placeholder="Ürün Tipi" required></p>
+      <p><input id="yeni_urun_aciklama" class="w3-input w3-border" type="text" placeholder="Açıklama" required></p>
+      <p><input id="yeni_urun_fiyat" class="w3-input w3-border" type="number" placeholder="Fiyat" required></p>
+      <p><input id="yeni_urun_foto1" class="w3-input w3-border" type="file" placeholder="Ürün Görseli" required></p>
 
       <button type="button" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="YeniUrunKaydet()">Kayıt Et</button>
+    </div>
+  </div>
+</div>
+<div id="tek_urun" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="padding:32px">
+    <div class="w3-container w3-white w3-center">
+      <i onclick="document.getElementById('tek_urun').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
+      <h2 class="w3-wide"></h2>
+      <div class="w3-container urun" id="tek_urun_ic">
+          <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/Lapis_Doğal_Taş_Parlak_Oval_Faset_Kesim_10x14mm_Bileklik_Doğal_Taş_Bileklik481311083.jpeg?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
+          <p style="width:19%;float:right;font-size: 18px;height: auto !important;    background-color: black;    color: white;    padding: 1%;    margin: 0;">
+            Lapis Doğal Taş Parlak Oval Faset Kesim 10x14mm Bileklik
+            <br>
+            <br>
+            <b>3434.11₺</b>
+            <br>
+            <br>
+            <a href="#" class="w3-button w3-black w3-padding-large w3-large"><i class="fa fa-shopping-cart"></i></a>
+          </p>
+      </div>
     </div>
   </div>
 </div>
@@ -299,16 +332,18 @@
 
     function YeniUrun(){
       document.getElementById('yeni_urun').style.display='block';
-      document.getElementById('yeni_urun_tipi').value ='';
-      document.getElementById('yeni_urun_aciklama').value ='';
-      document.getElementById('yeni_urun_fiyat').value ='';
+      document.getElementById('yeni_urun_tipi').value = '';
+      document.getElementById('yeni_urun_aciklama').value = '';
+      document.getElementById('yeni_urun_fiyat').value = '';
+      document.getElementById('yeni_urun_foto1').value = '';
+
     }
     async function YeniUrunKaydet(){
       if(document.getElementById('yeni_urun_tipi').value.length > 3 && document.getElementById('yeni_urun_aciklama').value.length > 20 && document.getElementById('yeni_urun_fiyat').value.length > 0){
        
         var foto_ad_adres = await fb.ResimKaydet( document.getElementById('yeni_urun_foto1'), document.getElementById('yeni_urun_aciklama').value + ' Doğal Taş ' + document.getElementById('yeni_urun_tipi').value);
         if(foto_ad_adres !== false){
-          var urun_bilgileri = {tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: document.getElementById('yeni_urun_fiyat').value,foto1:foto_ad_adres}
+          var urun_bilgileri = {tipi: document.getElementById('yeni_urun_tipi').value,aciklama: document.getElementById('yeni_urun_aciklama').value,fiyat: Number(document.getElementById('yeni_urun_fiyat').value),foto1:foto_ad_adres}
           await fb.Kaydet(urun_bilgileri);
           document.getElementById('yeni_urun').style.display='none';  
           //fb.UrunleriGetir();  
@@ -317,8 +352,12 @@
         alert('Tüm alanların doldurulması zorunludur.');
       }
     }
+    function AnaSayfa(){
+      fb.UrunleriFiltrele( '' );
+      document.getElementById('slayt').style.display='';
+
+    }
     function LinkTik(veri){
-      console.log(veri.innerHTML);
       var linkler = document.querySelectorAll('#filtreler a');
       for (let i = 0; i < linkler.length; i++) {
         if(linkler[i].innerHTML.indexOf('<i')>-1){
@@ -327,8 +366,17 @@
         }
       }
       fb.UrunleriFiltrele( veri.innerHTML );
+      document.getElementById('sayfa_baslik').innerHTML = 'Doğal Taş '+veri.innerHTML;
+
       veri.innerHTML = '<i class="fa fa-caret-right w3-margin-right"></i>' + veri.innerHTML;
       veri.classList.add('w3-light-grey');
+
+      document.getElementById('slayt').style.display='none';
+
+    }
+    function UrunTik(veri){
+      fb.TekUrun(veri);
+      document.getElementById('tek_urun').style.display='block';
 
     }
     // Accordion 
