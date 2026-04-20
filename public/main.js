@@ -63,7 +63,7 @@ async function UyeBilgileri(){
                 }
             }
             window.uyeDb=uyeDb;
-            SiparisListesi();
+            SiparisListesiGoster();
         } else {
             setDoc(docRef, {'email':uye.uid.substr(0,5),'uyeAdi':uye.uid.substr(0,5),'son': serverTimestamp()}, { merge: true });
             UyeBilgileri()
@@ -316,11 +316,27 @@ function TekUrun(veri){
 }
 window.fb.TekUrun=TekUrun;
 
-function SiparisListesi(){
+function SiparisListesiGoster(){
     if(uyeDb.siparis_listesi){
         document.getElementById('siparis_listesi_adet').innerHTML = uyeDb.siparis_listesi.length;
+        var html='';
+        var toplam_adet=0;
+        var toplam_tutar=0;
+        for (let i = 0; i < uyeDb.siparis_listesi.length; i++) {
+            for (let ii = 0; ii < urunler.length; ii++) {
+                if(urunler[ii].id === uyeDb.siparis_listesi[i].uid){
+                    html+='<div class="urun" style="margin:10px"><img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/'+urunler[ii].foto1+'?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:27%" loading="lazy"><p>İD: ' + uyeDb.siparis_listesi[i].uid + '<br>Adet: '+uyeDb.siparis_listesi[i].adet + '<br>Fiyat: '+urunler[ii].fiyat + '₺<br>Tutar: '+(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet) + '₺</p></div>';       
+                    toplam_adet+=uyeDb.siparis_listesi[i].adet ;
+                    toplam_tutar+=(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet);
+                    break;
+                }
+            }
+        }
+        document.getElementById('siparis_listesi_ic').innerHTML = html+'<div>Toplam Adet: '+toplam_adet+'<br>Toplam Tutar: '+toplam_tutar+'₺</div>';
     }
 }
+window.fb.SiparisListesiGoster=SiparisListesiGoster;
+
 async function SiparisListesiEkle(veri){
     if(!uyeDb.siparis_listesi){
         uyeDb.siparis_listesi=[];
@@ -339,6 +355,6 @@ async function SiparisListesiEkle(veri){
     const docRef = doc(collection(db, "uyeler"), uye.uid);
     const docSnap = await getDoc(docRef);
     setDoc(docRef, {'siparis_listesi':uyeDb.siparis_listesi,'son': serverTimestamp()}, { merge: true });
-    SiparisListesi()
+    SiparisListesiGoster()
 }
 window.fb.SiparisListesiEkle=SiparisListesiEkle;
