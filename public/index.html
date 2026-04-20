@@ -22,7 +22,6 @@
     .w3-sidebar a {font-family: "Roboto", sans-serif}
     body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
     .swiper {
-      
       height: 500px;
     }
     .swiper-slide {
@@ -46,6 +45,11 @@
     }
     .urun p{
       height:88px
+    }
+    @media (max-width: 720px) {
+      .swiper {
+        height: auto;
+      }
     }
   </style>
 
@@ -109,7 +113,8 @@
   <header class="w3-container w3-xlarge">
     <p class="w3-left" id="sayfa_baslik">Doğal Taş Bileklikler</p>
     <p class="w3-right">
-      <i class="fa fa-shopping-cart w3-margin-right"></i>
+      <i class="fa fa-shopping-cart"></i>
+      <i id="siparis_listesi_adet" class="fa w3-margin-right"></i>
       <i class="fa fa-search"></i>
     </p>
   </header>
@@ -327,6 +332,26 @@
     </div>
   </div>
 </div>
+<div id="siparis_listesi" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="padding:32px">
+    <div class="w3-container w3-white w3-center">
+      <i onclick="document.getElementById('tek_urun').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
+      <h2 class="w3-wide"></h2>
+      <div class="w3-container urun" id="tek_urun_ic">
+          <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/Lapis_Doğal_Taş_Parlak_Oval_Faset_Kesim_10x14mm_Bileklik_Doğal_Taş_Bileklik481311083.jpeg?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
+          <p style="width:19%;float:right;font-size: 18px;height: auto !important;    background-color: black;    color: white;    padding: 1%;    margin: 0;">
+            Lapis Doğal Taş Parlak Oval Faset Kesim 10x14mm Bileklik
+            <br>
+            <br>
+            <b>3434.11₺</b>
+            <br>
+            <br>
+            <a href="#" class="w3-button w3-black w3-padding-large w3-large"><i class="fa fa-shopping-cart"></i></a>
+          </p>
+      </div>
+    </div>
+  </div>
+</div>
 
   <script>
 
@@ -353,20 +378,17 @@
       }
     }
     function AnaSayfa(){
+      LinkleriSifirla();
       fb.UrunleriFiltrele( '' );
       document.getElementById('slayt').style.display='';
-
+      document.title='Doğal Taş Bileklik, Kolye';
     }
     function LinkTik(veri){
-      var linkler = document.querySelectorAll('#filtreler a');
-      for (let i = 0; i < linkler.length; i++) {
-        if(linkler[i].innerHTML.indexOf('<i')>-1){
-          linkler[i].innerHTML=linkler[i].innerHTML.replace('<i class="fa fa-caret-right w3-margin-right"></i>','');
-          linkler[i].classList.remove('w3-light-grey');
-        }
-      }
+      LinkleriSifirla();
+
       fb.UrunleriFiltrele( veri.innerHTML );
-      document.getElementById('sayfa_baslik').innerHTML = 'Doğal Taş '+veri.innerHTML;
+      document.getElementById('sayfa_baslik').innerHTML = 'Doğal Taş ' + veri.innerHTML;
+      document.title='Doğal Taş ' + veri.innerHTML;
 
       veri.innerHTML = '<i class="fa fa-caret-right w3-margin-right"></i>' + veri.innerHTML;
       veri.classList.add('w3-light-grey');
@@ -374,10 +396,23 @@
       document.getElementById('slayt').style.display='none';
 
     }
+    function LinkleriSifirla(){
+      var linkler = document.querySelectorAll('#filtreler a');
+      for (let i = 0; i < linkler.length; i++) {
+        if(linkler[i].innerHTML.indexOf('<i')>-1){
+          linkler[i].innerHTML=linkler[i].innerHTML.replace('<i class="fa fa-caret-right w3-margin-right"></i>','');
+          linkler[i].classList.remove('w3-light-grey');
+        }
+      }
+    }
     function UrunTik(veri){
       fb.TekUrun(veri);
       document.getElementById('tek_urun').style.display='block';
 
+    }
+    function ListeyeEkle(veri){
+      console.log('Listeye Ekle',veri);
+      fb.SiparisListesiEkle(veri);
     }
     // Accordion 
     function myAccFunc() {

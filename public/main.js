@@ -25,7 +25,6 @@ var ttkn;
 window.fb={};
 
 var uye,uyeDb;
-
 onAuthStateChanged(auth, (user) => {
     uye = user;
     console.log(uye);
@@ -63,8 +62,11 @@ async function UyeBilgileri(){
                     setDoc(docRef, {'email':uye.email.substr(0,5),'son': serverTimestamp()}, { merge: true });
                 }
             }
+            window.uyeDb=uyeDb;
+            SiparisListesi();
         } else {
-            
+            setDoc(docRef, {'email':uye.uid.substr(0,5),'uyeAdi':uye.uid.substr(0,5),'son': serverTimestamp()}, { merge: true });
+            UyeBilgileri()
         }
     }
 }
@@ -257,7 +259,7 @@ function UrunleriEkranaBas(){
             urunler_list.push(`
                 <div class="w3-container urun" onclick="UrunTik('${urunler[i].id}')">
                     <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
-                    <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}</b></p>
+                    <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}₺</b></p>
                 </div>    
             `);
             urun_say++;
@@ -307,10 +309,36 @@ function TekUrun(veri){
             <br>
             <b>${urun.fiyat}₺</b>
             <br>
-            <br>
-            <a href="#" class="w3-button w3-black w3-padding-large w3-large"><i class="fa fa-shopping-cart"></i></a>
+            <button type="submit" class="w3-button w3-block w3-black" onclick="ListeyeEkle('${urun.id}')"><i class="fa fa-shopping-cart"></i></button>
         </p>
     `;
 
 }
 window.fb.TekUrun=TekUrun;
+
+function SiparisListesi(){
+    if(uyeDb.siparis_listesi){
+        document.getElementById('siparis_listesi_adet').innerHTML = uyeDb.siparis_listesi.length;
+    }
+}
+async function SiparisListesiEkle(veri){
+    if(!uyeDb.siparis_listesi){
+        uyeDb.siparis_listesi=[];
+    }
+    var ekle=true;
+    for (let i = 0; i < uyeDb.siparis_listesi.length; i++) {
+        if(uyeDb.siparis_listesi[i].uid===veri){
+            uyeDb.siparis_listesi[i].adet++;
+            ekle=false;
+            break;
+        }        
+    }
+    if(ekle===true) {
+        uyeDb.siparis_listesi.push({'uid':veri,'adet':1});
+    }
+    const docRef = doc(collection(db, "uyeler"), uye.uid);
+    const docSnap = await getDoc(docRef);
+    setDoc(docRef, {'siparis_listesi':uyeDb.siparis_listesi,'son': serverTimestamp()}, { merge: true });
+    SiparisListesi()
+}
+window.fb.SiparisListesiEkle=SiparisListesiEkle;
