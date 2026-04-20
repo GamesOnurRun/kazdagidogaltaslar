@@ -325,14 +325,16 @@ function SiparisListesiGoster(){
         for (let i = 0; i < uyeDb.siparis_listesi.length; i++) {
             for (let ii = 0; ii < urunler.length; ii++) {
                 if(urunler[ii].id === uyeDb.siparis_listesi[i].uid){
-                    html+='<div class="urun" style="margin:10px"><img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/'+urunler[ii].foto1+'?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:27%" loading="lazy"><p>İD: ' + uyeDb.siparis_listesi[i].uid + '<br>Adet: '+uyeDb.siparis_listesi[i].adet + '<br>Fiyat: '+urunler[ii].fiyat + '₺<br>Tutar: '+(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet) + '₺</p></div>';       
+                    html+='<div class="urun yarim" style="margin:10px"><img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/'+urunler[ii].foto1+'?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:27%" loading="lazy"></div>';       
+                    html+='<div class="urun yarim" style="margin:10px"><p>İD: ' + uyeDb.siparis_listesi[i].uid + '<br>Adet: '+uyeDb.siparis_listesi[i].adet + '<br>Fiyat: '+urunler[ii].fiyat + '₺<br>Tutar: '+(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet) + '₺</p></div>';       
+
                     toplam_adet+=uyeDb.siparis_listesi[i].adet ;
                     toplam_tutar+=(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet);
                     break;
                 }
             }
         }
-        document.getElementById('siparis_listesi_ic').innerHTML = html+'<div>Toplam Adet: '+toplam_adet+'<br>Toplam Tutar: '+toplam_tutar+'₺</div>';
+        document.getElementById('siparis_listesi_ic').innerHTML = html+'<div class="urun yarim" style="margin:10px"></div><div class="urun yarim" style="margin:10px">Toplam Adet: '+toplam_adet+'<br>Toplam Tutar: '+toplam_tutar+'₺</div>';
     }
 }
 window.fb.SiparisListesiGoster=SiparisListesiGoster;
