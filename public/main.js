@@ -257,10 +257,12 @@ function UrunleriEkranaBas(){
     for (let i = urunler.length-1; i > -1; i--) {
         if(filtre_tipi==='' || filtre_tipi===urunler[i].tipi){
             urunler_list.push(`
-                <div class="w3-container urun" onclick="UrunTik('${urunler[i].id}')">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
-                    <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}₺</b></p>
-                </div>    
+                <a href="index.html?urun=${urunler[i].id}" onclick="UrunTik('${urunler[i].id}');return false;">
+                    <div class="w3-container urun">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
+                        <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}₺</b></p>
+                    </div> 
+                </a>   
             `);
             urun_say++;
         }
@@ -300,6 +302,17 @@ function TekUrun(veri){
             break;
         }  
     }
+    var secenekler='';
+    if(urun.tipi==='Bileklik'){
+        secenekler=`
+        <select  id="sepet_urun_secenek" class="w3-input w3-border">
+            <option value="22">22 cm.</option>
+            <option value="24">24 cm.</option>
+            <option value="26">26 cm.</option>
+            <option value="28">28 cm.</option>
+        </select>
+        `;
+    }
     document.getElementById('tek_urun_ic').innerHTML=
     `
         <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
@@ -309,9 +322,12 @@ function TekUrun(veri){
             <br>
             <b>${urun.fiyat}₺</b>
             <br>
+            ${secenekler}
             <button type="submit" class="w3-button w3-block w3-black" onclick="ListeyeEkle('${urun.id}')"><i class="fa fa-shopping-cart"></i></button>
         </p>
     `;
+    window.yedek_href=location.href;
+    window.history.replaceState( {} , urun.aciklama, 'index.html?urun=' + veri );
 
 }
 window.fb.TekUrun=TekUrun;
