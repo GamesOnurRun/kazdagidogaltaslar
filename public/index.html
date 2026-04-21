@@ -39,6 +39,9 @@
     #urunler{
       min-height:300px;
     }
+    #urunler a{
+      text-decoration: none;
+    }
     .urun img{
       aspect-ratio: 8 / 12;
       object-fit: cover;
@@ -86,11 +89,15 @@
     </div>
     <a href="index.html?liste=Bardak Altlığı" onclick="LinkTik(this);return false" class="w3-bar-item w3-button">Bardak Altlığı</a>
   </div>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Üye Ol</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Giriş Yap</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Çıkış</a> 
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün</a> 
+  <br>
   <a href="https://www.ay-akademi.com/" class="w3-bar-item w3-button w3-padding">Ay Akademi</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Tiktok</a> 
   <a href="#footer"  class="w3-bar-item w3-button w3-padding">Youtube</a>
   <br>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün</a> 
 
 </nav>
 
@@ -120,6 +127,7 @@
   <header class="w3-container w3-xlarge">
     <p class="w3-left" id="sayfa_baslik">Doğal Taş Bileklikler</p>
     <p class="w3-right">
+      <i onclick="SiparisListesiGoster()" class="fa fa-sign-in w3-margin-right" style="cursor:pointer"></i>
       <i onclick="SiparisListesiGoster()" class="fa fa-shopping-cart" style="cursor:pointer"></i>
       <i onclick="SiparisListesiGoster()" id="siparis_listesi_adet" class="fa w3-margin-right"  style="cursor:pointer"></i>
       <i class="fa fa-search"></i>
