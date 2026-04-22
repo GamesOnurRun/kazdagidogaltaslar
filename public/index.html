@@ -52,6 +52,10 @@
     .yarim{
       width: 45%;
     }
+    .hata_goster{
+      color:red;
+      font-weight: bolder;
+    }
     #siparis_listesi_ic{
       display: flex;
       flex-wrap: wrap;
@@ -65,13 +69,13 @@
 
   
 </head>
-<body class="w3-content" style="max-width:1200px">
+<body class="w3-content" style="max-width:1200px" onload="YuklemeTamamlandi('body')">
 
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
   <div class="w3-container w3-display-container w3-padding-16">
     <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
-    <h3 class="w3-wide"><a href="#" onclick="AnaSayfa()" class="w3-bar-item w3-button" title="Doğal Taş Bileklik"><b>DOĞAL TAŞ</b></a></h3>
+    <h3 class="w3-wide"><a href="/" onclick="AnaSayfa();return false" class="w3-bar-item w3-button" title="Doğal Taş Bileklik"><b>DOĞAL TAŞ</b></a></h3>
   </div>
   <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold" id="filtreler">
     <a href="index.html?liste=Bileklik" onclick="LinkTik(this);return false" class="w3-bar-item w3-button" title="Doğal Taş Bileklik">Bileklik</a>
@@ -89,10 +93,13 @@
     </div>
     <a href="index.html?liste=Bardak Altlığı" onclick="LinkTik(this);return false" class="w3-bar-item w3-button">Bardak Altlığı</a>
   </div>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Üye Ol</a>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Giriş Yap</a>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Çıkış</a> 
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün</a> 
+
+  <a href="javascript:void(0)" id="uye_adi" class="w3-bar-item w3-button w3-padding" onclick="alert('sonra')">Üye Ol</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeYeni()">Üye Ol</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeGiris()">Giriş Yap</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeCikis()">Çıkış</a>   
+  <br>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün Oluştur</a> 
   <br>
   <a href="https://www.ay-akademi.com/" class="w3-bar-item w3-button w3-padding">Ay Akademi</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Tiktok</a> 
@@ -358,9 +365,39 @@
     </div>
   </div>
 </div>
-
+<div id="uye_yeni_modal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="padding:32px">
+    <div class="w3-container w3-white w3-center">
+      <i onclick="document.getElementById('uye_yeni_modal').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
+      <h2 class="w3-wide">YENİ ÜYE</h2>
+      <p></p>
+      <p><input id="uye_yeni_isim" class="w3-input w3-border" type="text" placeholder="İsim" required></p>
+      <p><input id="uye_yeni_email" class="w3-input w3-border" type="text" placeholder="E Mail" required></p>
+      <p><input id="uye_yeni_parola" class="w3-input w3-border" type="password" placeholder="Parola" required></p>  
+      <p id="uye_yeni_hata_goster" class="hata_goster"></p>
+      <button type="button" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="UyeYeniKaydet()">Üye Ol</button>
+    </div>
+  </div>
+</div>
   <script>
+    var yukleme_takip={'body':false,'uye':false,'urunler':false};
+    function YuklemeTamamlandi(veri){
+      yukleme_takip[veri]=true;
 
+      if(yukleme_takip.urunler===true){
+        if(location.search.indexOf('?liste')>-1){
+          var linkler = document.querySelectorAll('#filtreler a');
+          for (let i = 0; i < linkler.length; i++) {
+            if(linkler[i].innerHTML.indexOf(location.search.substr(7))>-1){
+              linkler[i].click();
+              break;
+            }
+          }
+        }else if(location.search.indexOf('?urun')>-1){
+          UrunTik(location.search.substr(6));
+        }
+      }
+    }
     function YeniUrun(){
       document.getElementById('yeni_urun').style.display='block';
       document.getElementById('yeni_urun_tipi').value = '';
@@ -383,11 +420,14 @@
         alert('Tüm alanların doldurulması zorunludur.');
       }
     }
+    
     function AnaSayfa(){
       LinkleriSifirla();
       fb.UrunleriFiltrele( '' );
       document.getElementById('slayt').style.display='';
       document.title='Doğal Taş Bileklik, Kolye';
+      window.history.replaceState( {} , 'Doğal Taş Bileklik, Kolye', '/');
+
     }
     function LinkTik(veri){
       LinkleriSifirla();
@@ -397,8 +437,6 @@
       document.title='Doğal Taş ' + veri.innerHTML;
 
       window.history.replaceState( {} , 'Doğal Taş ' + veri.innerHTML, 'index.html?liste=' + veri.innerHTML );
-
-
 
       veri.innerHTML = '<i class="fa fa-caret-right w3-margin-right"></i>' + veri.innerHTML;
       veri.classList.add('w3-light-grey');
@@ -415,6 +453,7 @@
         }
       }
     }
+    
     function UrunTik(veri){
       fb.TekUrun(veri);
       document.getElementById('tek_urun').style.display='block';
@@ -425,11 +464,16 @@
 
 
       if(window.yedek_href){
-        window.history.replaceState( {} , '', window.yedek_href );
+        if(location.href===window.yedek_href){
+          window.history.replaceState( {} , '', '/' );
+        }else{
+          window.history.replaceState( {} , '', window.yedek_href );
+        }
       }
 
 
     }
+    
     function ListeyeEkle(veri){
       console.log('Listeye Ekle',veri);
       fb.SiparisListesiEkle(veri);
@@ -438,7 +482,21 @@
       document.getElementById('siparis_listesi').style.display='block';
       fb.SiparisListesiGoster();
     }
-    // Accordion 
+    
+    function UyeYeni(){
+      document.getElementById('uye_yeni_modal').style.display='block';
+      document.getElementById('uye_yeni_isim').value='';
+      document.getElementById('uye_yeni_email').value='';
+      document.getElementById('uye_yeni_parola').value='';
+    }
+    function UyeYeniKaydet(){
+      if(document.getElementById('uye_yeni_isim').value.length > 3 && document.getElementById('uye_yeni_email').value.length > 10 && document.getElementById('uye_yeni_parola').value.length > 5){
+        fb.EmailKayit(document.getElementById('uye_yeni_email').value,document.getElementById('uye_yeni_parola').value);
+      }else{
+        alert('Tüm alanların doldurulması zorunludur.');
+      }
+    }
+
     function myAccFunc() {
       var x = document.getElementById("demoAcc");
       if (x.className.indexOf("w3-show") == -1) {
@@ -447,17 +505,11 @@
         x.className = x.className.replace(" w3-show", "");
       }
     }
-
-    // Click on the "Jeans" link on page load to open the accordion for demo purposes
     document.getElementById("myBtn").click();
-
-
-    // Open and close sidebar
     function w3_open() {
       document.getElementById("mySidebar").style.display = "block";
       document.getElementById("myOverlay").style.display = "block";
     }
-    
     function w3_close() {
       document.getElementById("mySidebar").style.display = "none";
       document.getElementById("myOverlay").style.display = "none";

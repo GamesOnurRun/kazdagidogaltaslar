@@ -64,6 +64,8 @@ async function UyeBilgileri(){
             }
             window.uyeDb=uyeDb;
             SiparisListesiGoster();
+            window.YuklemeTamamlandi('uye');
+
         } else {
             setDoc(docRef, {'email':uye.uid.substr(0,5),'uyeAdi':uye.uid.substr(0,5),'son': serverTimestamp()}, { merge: true });
             UyeBilgileri()
@@ -169,10 +171,6 @@ function EmailGiris(email,parola){
 window.fb.EmailGiris=EmailGiris;
 
 function EmailKayit(email,parola){
-    var email=document.getElementById('regemail').value;
-    var parola=document.getElementById('regpas').value
-    //document.getElementById('fbbar').innerHTML='<div><img src="https://ongame.run/gelistirme/yukleniyor.svg"></div>';
-   
     createUserWithEmailAndPassword(auth, email, parola)
     .then((userCredential) => {
       // Signed up 
@@ -183,7 +181,7 @@ function EmailKayit(email,parola){
       const errorCode = error.code;
       const errorMessage = error.message;
 
-      document.getElementById('hata_goster').innerHTML=error.message;
+      document.getElementById('uye_yeni_hata_goster').innerHTML=error.message;
       // ..
     });
 
@@ -206,17 +204,21 @@ function convertTimestamp(timestamp) {
     if(timestamp===null) return 'Yeni';
     if(timestamp===undefined) return '';
     var fark=Date.now()-(timestamp.seconds*1000);
-    if(fark<500000){ return Math.floor(fark/1000)+' Sn'}
-      let date = timestamp.toDate();
-      let mm = date.getMonth()+1;
-      let dd = date.getDate();
-      let yyyy = date.getFullYear();
-      let h = date.getHours();
-      let m = date.getMinutes();
+    console.log(fark);
+    if(fark<500000){ 
+        return 'Yeni';
+        //return Math.floor(fark/1000)+' Sn';
+    }
+    let date = timestamp.toDate();
+    let mm = date.getMonth()+1;
+    let dd = date.getDate();
+    let yyyy = date.getFullYear();
+    let h = date.getHours();
+    let m = date.getMinutes();
     m=m<10?'0'+m:m;
   
-      date = mm + '/' + dd + '/' + yyyy + ' '+h+':'+m;
-      return date;
+    date = mm + '/' + dd + '/' + yyyy + ' '+h+':'+m;
+    return date;
 }
 
 var urunler=[];
@@ -246,7 +248,8 @@ function UrunleriGetir(){
             }
         });
         console.log(urunler);
-        UrunleriEkranaBas()
+        UrunleriEkranaBas();
+        window.YuklemeTamamlandi('urunler');
     });
 }
 window.fb.UrunleriGetir=UrunleriGetir;
@@ -313,9 +316,25 @@ function TekUrun(veri){
         </select>
         `;
     }
-    document.getElementById('tek_urun_ic').innerHTML=
-    `
+    var yeni_bilgi='';
+    if(convertTimestamp(urun.tarih)=='Yeni'){
+        yeni_bilgi=`
+        <div class="w3-display-container">
         <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
+          <span class="w3-tag w3-display-topleft">Yeni</span>
+          <div class="w3-display-middle w3-display-hover">
+            <button class="w3-button w3-black">Hemen Satın Al <i class="fa fa-shopping-cart"></i></button>
+          </div>
+        </div>
+        `;
+    }else{
+        yeni_bilgi=`
+        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
+
+        `;
+    }
+    document.getElementById('tek_urun_ic').innerHTML=
+    `   ${yeni_bilgi}
         <p style="width:19%;float:right;font-size: 18px;height: auto !important;    background-color: black;    color: white;    padding: 1%;    margin: 0;">
             ${urun.aciklama}
             <br>
