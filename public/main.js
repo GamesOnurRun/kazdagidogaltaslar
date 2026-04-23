@@ -63,7 +63,9 @@ function KullaniciTipineGoreAyarlar(){
             document.getElementById('link_uye_ol').style.display='none';
             document.getElementById('link_uye_giris').style.display='none';
             document.getElementById('link_uye_cikis').style.display='block';
-            document.getElementById('link_yeni_urun_olustur').style.display='block';
+            if(uye.uid =='z1DkY3pkC4MAVkiHqal4wVikPuD3'){
+                document.getElementById('link_yeni_urun_olustur').style.display='block';
+            }
         }
     }
 }
