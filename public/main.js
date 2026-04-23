@@ -236,7 +236,6 @@ function convertTimestamp(timestamp) {
     if(timestamp===null) return 'Yeni';
     if(timestamp===undefined) return '';
     var fark=Date.now()-(timestamp.seconds*1000);
-    console.log(fark);
     if(fark<500000){ 
         return 'Yeni';
         //return Math.floor(fark/1000)+' Sn';
@@ -291,14 +290,33 @@ function UrunleriEkranaBas(){
     var urun_say=0;
     for (let i = urunler.length-1; i > -1; i--) {
         if(filtre_tipi==='' || filtre_tipi===urunler[i].tipi){
-            urunler_list.push(`
+            var urun_html='';
+            if(convertTimestamp(urunler[i].tarih)=='Yeni'){
+                urun_html=`
                 <a href="index.html?urun=${urunler[i].id}" onclick="UrunTik('${urunler[i].id}');return false;">
                     <div class="w3-container urun">
+                        <div class="w3-display-container">
                         <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
+                        <span class="w3-tag w3-display-topleft">Yeni</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button class="w3-button w3-black">Hemen Satın Al <i class="fa fa-shopping-cart"></i></button>
+                        </div>
                         <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}₺</b></p>
-                    </div> 
-                </a>   
-            `);
+                        </div>
+                    </div>
+                </a>
+                `;
+            }else{
+                urun_html=`
+                    <a href="index.html?urun=${urunler[i].id}" onclick="UrunTik('${urunler[i].id}');return false;">
+                        <div class="w3-container urun">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urunler[i].foto1}?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:100%" loading="lazy">
+                            <p>${urunler[i].aciklama}<br><b>${urunler[i].fiyat}₺</b></p>
+                        </div> 
+                    </a> 
+                `;
+            }
+            urunler_list.push(urun_html);
             urun_say++;
         }
     }
@@ -341,32 +359,16 @@ function TekUrun(veri){
     if(urun.tipi==='Bileklik'){
         secenekler=`
         <select  id="sepet_urun_secenek" class="w3-input w3-border">
-            <option value="22">22 cm.</option>
-            <option value="24">24 cm.</option>
-            <option value="26">26 cm.</option>
-            <option value="28">28 cm.</option>
+            <option value="22 cm.">22 cm.</option>
+            <option value="24 cm.">24 cm.</option>
+            <option value="26 cm.">26 cm.</option>
+            <option value="28 cm.">28 cm.</option>
         </select>
         `;
     }
-    var yeni_bilgi='';
-    if(convertTimestamp(urun.tarih)=='Yeni'){
-        yeni_bilgi=`
-        <div class="w3-display-container">
-        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
-          <span class="w3-tag w3-display-topleft">Yeni</span>
-          <div class="w3-display-middle w3-display-hover">
-            <button class="w3-button w3-black">Hemen Satın Al <i class="fa fa-shopping-cart"></i></button>
-          </div>
-        </div>
-        `;
-    }else{
-        yeni_bilgi=`
-        <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
 
-        `;
-    }
     document.getElementById('tek_urun_ic').innerHTML=
-    `   ${yeni_bilgi}
+    `   <img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/${urun.foto1}?alt=media&amp;token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:80%;float:left">
         <p style="width:19%;float:right;font-size: 18px;height: auto !important;    background-color: black;    color: white;    padding: 1%;    margin: 0;">
             ${urun.aciklama}
             <br>
@@ -374,7 +376,7 @@ function TekUrun(veri){
             <b>${urun.fiyat}₺</b>
             <br>
             ${secenekler}
-            <button type="submit" class="w3-button w3-block w3-black" onclick="ListeyeEkle('${urun.id}')"><i class="fa fa-shopping-cart"></i></button>
+            <button type="submit" class="w3-button w3-block w3-black" onclick="SiparisListesineEkle('${urun.id}','sepet_urun_secenek')"><i class="fa fa-shopping-cart"></i></button>
         </p>
     `;
     window.yedek_href=location.href;
@@ -384,6 +386,8 @@ function TekUrun(veri){
 window.fb.TekUrun=TekUrun;
 
 function SiparisListesiGoster(){
+    document.getElementById('siparis_listesi_adet').innerHTML = '';
+
     if(uyeDb.siparis_listesi){
         document.getElementById('siparis_listesi_adet').innerHTML = uyeDb.siparis_listesi.length;
         var html='';
@@ -393,7 +397,7 @@ function SiparisListesiGoster(){
             for (let ii = 0; ii < urunler.length; ii++) {
                 if(urunler[ii].id === uyeDb.siparis_listesi[i].uid){
                     html+='<div class="urun yarim" style="margin:10px"><img src="https://firebasestorage.googleapis.com/v0/b/kazdagidogaltaslar.firebasestorage.app/o/'+urunler[ii].foto1+'?alt=media&token=18c486fd-a7c1-4cdb-8f41-b7f48315a974" style="width:27%" loading="lazy"></div>';       
-                    html+='<div class="urun yarim" style="margin:10px"><p>İD: ' + uyeDb.siparis_listesi[i].uid + '<br>Adet: '+uyeDb.siparis_listesi[i].adet + '<br>Fiyat: '+urunler[ii].fiyat + '₺<br>Tutar: '+(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet) + '₺</p></div>';       
+                    html+='<div class="urun yarim" style="margin:10px"><p>İD: ' + uyeDb.siparis_listesi[i].uid + '<br>'+(uyeDb.siparis_listesi[i].detay ?'Detay: ' + uyeDb.siparis_listesi[i].detay + '<br>' : '')+'Adet: '+uyeDb.siparis_listesi[i].adet + '<br>Fiyat: '+urunler[ii].fiyat + '₺<br>Tutar: '+(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet) + '₺</p></div>';       
 
                     toplam_adet+=uyeDb.siparis_listesi[i].adet ;
                     toplam_tutar+=(urunler[ii].fiyat*uyeDb.siparis_listesi[i].adet);
@@ -406,7 +410,7 @@ function SiparisListesiGoster(){
 }
 window.fb.SiparisListesiGoster=SiparisListesiGoster;
 
-async function SiparisListesiEkle(veri){
+async function SiparisListesiEkle(veri,detay){
     if(!uyeDb.siparis_listesi){
         uyeDb.siparis_listesi=[];
     }
@@ -414,6 +418,7 @@ async function SiparisListesiEkle(veri){
     for (let i = 0; i < uyeDb.siparis_listesi.length; i++) {
         if(uyeDb.siparis_listesi[i].uid===veri){
             uyeDb.siparis_listesi[i].adet++;
+            uyeDb.siparis_listesi[i].detay=detay?detay:'';
             ekle=false;
             break;
         }        

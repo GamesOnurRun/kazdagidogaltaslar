@@ -429,9 +429,9 @@
 
     }
     
-    function ListeyeEkle(veri){
+    function SiparisListesineEkle(veri,secenek){
       console.log('Listeye Ekle',veri);
-      fb.SiparisListesiEkle(veri);
+      fb.SiparisListesiEkle(veri,document.getElementById(secenek).value);
     }
     function SiparisListesiGoster(){
       document.getElementById('siparis_listesi').style.display='block';
