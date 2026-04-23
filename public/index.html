@@ -94,12 +94,12 @@
     <a href="index.html?liste=Bardak Altlığı" onclick="LinkTik(this);return false" class="w3-bar-item w3-button">Bardak Altlığı</a>
   </div>
 
-  <a href="javascript:void(0)" id="uye_adi" class="w3-bar-item w3-button w3-padding" onclick="alert('sonra')">Üye Ol</a>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeYeni()">Üye Ol</a>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeGiris()">Giriş Yap</a>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="UyeCikis()">Çıkış</a>   
+  <a href="javascript:void(0)" id="link_uye_adi" class="w3-bar-item w3-button w3-padding" onclick="alert('sonra')"><img src="img/yukleniyor.svg"></a>
+  <a href="javascript:void(0)" id="link_uye_ol" class="w3-bar-item w3-button w3-padding" style="display:none" onclick="UyeYeni()">Üye Ol</a>
+  <a href="javascript:void(0)" id="link_uye_giris" class="w3-bar-item w3-button w3-padding" style="display:none" onclick="UyeGiris()">Giriş Yap</a>
+  <a href="javascript:void(0)" id="link_uye_cikis" class="w3-bar-item w3-button w3-padding" style="display:none" onclick="fb.Cikis()">Çıkış</a>   
   <br>
-  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="YeniUrun()">Yeni Ürün Oluştur</a> 
+  <a href="javascript:void(0)" id="link_yeni_urun_olustur" class="w3-bar-item w3-button w3-padding" style="display:none" onclick="YeniUrun()">Yeni Ürün Oluştur</a> 
   <br>
   <a href="https://www.ay-akademi.com/" class="w3-bar-item w3-button w3-padding">Ay Akademi</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Tiktok</a> 
@@ -191,67 +191,9 @@
 
 
   <div class="w3-container w3-text-grey">
-    <p id="liste_aciklama">8 urun</p>
+    <p id="liste_aciklama"></p>
   </div>
-
-  <!-- Product grid -->
-  <div class="w3-row w3-grayscale" id="urunler">
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="img/1.jpg" style="width:100%">
-        <p>Lapis Doğal Taş Parlak Oval Faset Kesim 10x14mm Bileklik<br><b>₺796,50</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="img/2.jpg" style="width:100%">
-        <p>Güneş Taşı Parlak Dikdörtgen Faset Kesim 11x14mm Bileklik<br><b>₺1.147,50</b></p>
-      </div>
-    </div>
-
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <div class="w3-display-container">
-          <img src="img/3.jpg" style="width:100%">
-          <span class="w3-tag w3-display-topleft">Yeni</span>
-          <div class="w3-display-middle w3-display-hover">
-            <button class="w3-button w3-black">Hemen Satın Al <i class="fa fa-shopping-cart"></i></button>
-          </div>
-        </div>
-        <p>Kaplangözü Doğal Taş Parlak Oval Faset Kesim 11x15mm Bileklik<br><b>₺337,50</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="img/4.jpg" style="width:100%">
-        <p>Titreşim Doğal Taş Oval Kesim 14x10mm Bileklik<br><b>₺382,50</b></p>
-      </div>
-    </div>
-
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="img/5.jpg" style="width:100%">
-        <p>Titreşim Doğal Taş Oval Kesim 14x10mm Bileklik<br><b>₺382,50</b></p>
-      </div>
-      <div class="w3-container">
-        <div class="w3-display-container">
-          <img src="img/6.jpg" style="width:100%">
-          <span class="w3-tag w3-display-topleft">İndirim</span>
-          <div class="w3-display-middle w3-display-hover">
-            <button class="w3-button w3-black">Hemen Satın Al <i class="fa fa-shopping-cart"></i></button>
-          </div>
-        </div>
-        <p>Apatit Doğal Taş Parlak Oval Faset Kesim 11x15mm Bileklik<br><b class="w3-text-red">₺769,50</b></p>
-      </div>
-    </div>
-
-    <div class="w3-col l3 s6">
-      <div class="w3-container">
-        <img src="img/7.jpg" style="width:100%">
-        <p>Ametist Doğal Taş Parlak Kare Faset Kesim 12x12mm Bileklik<br><b>₺337,50</b></p>
-      </div>
-      <div class="w3-container">
-        <img src="img/8.jpg" style="width:100%">
-        <p>Pirit Doğal Taş Parlak Oval Faset Kesim 11x15mm Bileklik<br><b>₺337,50</b></p>
-      </div>
-    </div>
-  </div>
+  <div class="w3-row w3-grayscale" id="urunler"><center><img src="img/yukleniyor.svg"></center></div>
   
   <!-- Footer -->
   <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
@@ -379,6 +321,19 @@
     </div>
   </div>
 </div>
+<div id="uye_giris_modal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="padding:32px">
+    <div class="w3-container w3-white w3-center">
+      <i onclick="document.getElementById('uye_giris_modal').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
+      <h2 class="w3-wide">ÜYE GİRİŞ</h2>
+      <p></p>
+      <p><input id="uye_giris_email" class="w3-input w3-border" type="text" placeholder="E Mail" required></p>
+      <p><input id="uye_giris_parola" class="w3-input w3-border" type="password" placeholder="Parola" required></p>  
+      <p id="uye_giris_hata_goster" class="hata_goster"></p>
+      <button type="button" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="UyeGirisKaydet()">Giriş</button>
+    </div>
+  </div>
+</div>
   <script>
     var yukleme_takip={'body':false,'uye':false,'urunler':false};
     function YuklemeTamamlandi(veri){
@@ -484,6 +439,7 @@
     }
     
     function UyeYeni(){
+      document.getElementById('uye_yeni_hata_goster').innerHTML = '';
       document.getElementById('uye_yeni_modal').style.display='block';
       document.getElementById('uye_yeni_isim').value='';
       document.getElementById('uye_yeni_email').value='';
@@ -491,12 +447,26 @@
     }
     function UyeYeniKaydet(){
       if(document.getElementById('uye_yeni_isim').value.length > 3 && document.getElementById('uye_yeni_email').value.length > 10 && document.getElementById('uye_yeni_parola').value.length > 5){
+        document.getElementById('uye_yeni_hata_goster').innerHTML = '<center><img src="img/yukleniyor.svg"></center>';
         fb.EmailKayit(document.getElementById('uye_yeni_email').value,document.getElementById('uye_yeni_parola').value);
       }else{
-        alert('Tüm alanların doldurulması zorunludur.');
+        document.getElementById('uye_yeni_hata_goster').innerHTML = 'Tüm alanların doldurulması zorunludur.';
       }
     }
-
+   function UyeGiris(){
+      document.getElementById('uye_giris_hata_goster').innerHTML = '';
+      document.getElementById('uye_giris_modal').style.display='block';
+      document.getElementById('uye_giris_email').value='';
+      document.getElementById('uye_giris_parola').value='';
+    }
+    function UyeGirisKaydet(){
+      if(document.getElementById('uye_giris_email').value.length > 10 && document.getElementById('uye_giris_parola').value.length > 5){
+        document.getElementById('uye_giris_hata_goster').innerHTML = '<center><img src="img/yukleniyor.svg"></center>';
+        fb.EmailGiris(document.getElementById('uye_giris_email').value,document.getElementById('uye_giris_parola').value);
+      }else{
+        document.getElementById('uye_giris_hata_goster').innerHTML = 'Tüm alanların doldurulması zorunludur.';
+      }
+    }
     function myAccFunc() {
       var x = document.getElementById("demoAcc");
       if (x.className.indexOf("w3-show") == -1) {

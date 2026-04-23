@@ -37,10 +37,37 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('load').innerHTML = 'Firebase Yüklendi.';
         
         UyeBilgileri();
-        UrunleriGetir()
-
+        UrunleriGetir();
     }
+    KullaniciTipineGoreAyarlar();
 });
+
+function KullaniciTipineGoreAyarlar(){
+    console.log(2123)
+    if(uye===null){
+        document.getElementById('link_uye_adi').innerHTML = '<img src="img/yukleniyor.svg">';
+        document.getElementById('link_uye_ol').style.display='none';
+        document.getElementById('link_uye_giris').style.display='none';
+        document.getElementById('link_uye_cikis').style.display='none';
+        document.getElementById('link_yeni_urun_olustur').style.display='none';
+    }else{
+        if(uye.isAnonymous){
+            document.getElementById('link_uye_ol').style.display='block';
+            document.getElementById('link_uye_giris').style.display='block';
+            document.getElementById('link_uye_cikis').style.display='none';
+            document.getElementById('link_yeni_urun_olustur').style.display='none';
+        }else{
+            document.getElementById('uye_yeni_modal').style.display='none';
+            document.getElementById('uye_giris_modal').style.display='none';
+
+            document.getElementById('link_uye_ol').style.display='none';
+            document.getElementById('link_uye_giris').style.display='none';
+            document.getElementById('link_uye_cikis').style.display='block';
+            document.getElementById('link_yeni_urun_olustur').style.display='block';
+        }
+    }
+}
+
 
 
 async function UyeBilgileri(){
@@ -64,6 +91,7 @@ async function UyeBilgileri(){
             }
             window.uyeDb=uyeDb;
             SiparisListesiGoster();
+            document.getElementById('link_uye_adi').innerHTML = uyeDb.uyeAdi;
             window.YuklemeTamamlandi('uye');
 
         } else {
@@ -72,6 +100,15 @@ async function UyeBilgileri(){
         }
     }
 }
+async function UyeBilgileriKaydet(uye_uid,veri){
+    if(uye_uid===null){
+        uye_uid=uye.uid;
+    }
+    const docRef = doc(collection(db, "uyeler"), uye_uid);
+    setDoc(docRef, veri, { merge: true });
+}
+fb.UyeBilgileriKaydet=UyeBilgileriKaydet;
+
 
 async function Kaydet(veri){
     veri.uye_uid=uye.uid;
@@ -150,10 +187,6 @@ window.fb.AnonimGiris=AnonimGiris;
 
 
 function EmailGiris(email,parola){
-    var email=document.getElementById('logemail').value;
-    var parola=document.getElementById('logpas').value
-    //document.getElementById('fbbar').innerHTML='<div><img src="https://ongame.run/gelistirme/yukleniyor.svg"></div>';
-
     signInWithEmailAndPassword(auth, email, parola)
       .then((userCredential) => {
         // Signed in 
@@ -164,7 +197,7 @@ function EmailGiris(email,parola){
         console.log(error);
         const errorCode = error.code;
         const errorMessage = error.message;
-        document.getElementById('hata_goster').innerHTML=error.message;
+        document.getElementById('uye_yeni_hata_goster').innerHTML = error.message;
 
       });
 }
@@ -173,15 +206,14 @@ window.fb.EmailGiris=EmailGiris;
 function EmailKayit(email,parola){
     createUserWithEmailAndPassword(auth, email, parola)
     .then((userCredential) => {
-      // Signed up 
       const user = userCredential.user;
-      // ...
+        UyeBilgileriKaydet(user.uid,{'uyeAdi':document.getElementById('uye_yeni_isim').value});
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
 
-      document.getElementById('uye_yeni_hata_goster').innerHTML=error.message;
+      document.getElementById('uye_yeni_hata_goster').innerHTML = error.message;
       // ..
     });
 
