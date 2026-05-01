@@ -41,6 +41,21 @@ onAuthStateChanged(auth, (user) => {
     KullaniciTipineGoreAyarlar();
 });
 
+
+var ttkn;
+if(location.host.indexOf('127.0.0.1')==-1 && location.host.indexOf('localhost')==-1){
+    getToken(messaging, { vapidKey: 'BKDKfa3xhebQMHd-ujRrKyol0vOE5rrtrMTYU2cl1zvI7l_oORfLMFFO1dOzLo_6wIWPQ_JWrGTE1awz5vksd8A' }).then((currentToken) => {
+        if (currentToken) {
+            ttkn = currentToken;
+            NotTok();
+        } else {
+            console.log('No registration token available. Request permission to generate one.');
+        }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+    });
+}
+
 function KullaniciTipineGoreAyarlar(){
     console.log(2123)
     if(uye===null){

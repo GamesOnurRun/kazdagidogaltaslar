@@ -52,14 +52,19 @@ window.vk.AramaYap=AramaYap;
 
 async function openUserMedia(e) {
 
-  var elemDiv = document.createElement('div');
-  elemDiv.id='videos';
-  elemDiv.innerHTML=`		
-    <video id="remoteVideo" autoplay="" playsinline="" style="position: fixed;left: 0;top: 0;width: 75%;height: 100%;margin: 0;object-fit: contain;"></video>
-    <video id="localVideo" muted="" autoplay="" playsinline="" style="position: fixed;right: 25%;bottom: 5px;height:auto;max-width: 30%;max-height: 30%"></video>
-  `;
-  document.body.insertBefore(elemDiv,document.getElementById('mySidebar'));
-
+  if(!document.getElementById('videos')){
+    var elemDiv = document.createElement('div');
+    elemDiv.id='videos';
+    elemDiv.style="position: fixed;left: 0;width: 100%;height: 100%;background-color:white;    z-index: 4;"
+    elemDiv.innerHTML=`
+      <i style="position: fixed; right: 0; z-index: 1;" onclick="document.getElementById('videos').style.display='none'" class="fa fa-remove w3-right w3-button w3-transparent w3-xxlarge"></i>
+      <video id="remoteVideo" autoplay="" playsinline="" style="position: fixed;left: 0;top: 0;width: 100%;height: 100%;margin: 0;object-fit: contain;"></video>
+      <video id="localVideo" muted="" autoplay="" playsinline="" style="position: fixed;right: 0;bottom: 5px;height:auto;max-width: 30%;max-height: 30%"></video>
+    `;
+    document.body.insertBefore(elemDiv,document.getElementById('mySidebar'));
+  }else{
+    document.getElementById('videos').style.display='block';
+  }
 
   var stream;
   try {
