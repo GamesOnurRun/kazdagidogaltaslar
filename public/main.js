@@ -42,9 +42,8 @@ onAuthStateChanged(auth, (user) => {
 });
 
 
-var ttkn;
 if(location.host.indexOf('127.0.0.1')==-1 && location.host.indexOf('localhost')==-1){
-    getToken(messaging, { vapidKey: 'BKDKfa3xhebQMHd-ujRrKyol0vOE5rrtrMTYU2cl1zvI7l_oORfLMFFO1dOzLo_6wIWPQ_JWrGTE1awz5vksd8A' }).then((currentToken) => {
+    getToken(messaging, { vapidKey: 'BF698lgrhV6LGFaqgqR82zug9bLMU_slcahjnVYrkN9CUvPdIhacSZizhr9Mf543bYBb06lqZtI_gBLX4M88-YU' }).then((currentToken) => {
         if (currentToken) {
             ttkn = currentToken;
             NotTok();
@@ -242,9 +241,6 @@ function NotTok(){
     if(ttkn && uye && uye.uid){
         const docRef = doc(db, "uyeler", uye.uid);
         setDoc(docRef, {'ntok':ttkn,'email':uye.email,'son': serverTimestamp()}, { merge: true });
-    }
-    if(uye && uye.uid){
-    
     }
 }
 
