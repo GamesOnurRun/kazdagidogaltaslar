@@ -23,7 +23,7 @@ const auth = getAuth();
 var ttkn;
 window.fb={};
 
-var uye,uyeDb;
+var uye,uyeDb,admin;
 onAuthStateChanged(auth, (user) => {
     uye = user;
     console.log(uye);
@@ -54,9 +54,13 @@ if(location.host.indexOf('127.0.0.1')==-1 && location.host.indexOf('localhost')=
             console.log('An error occurred while retrieving token. ', err);
     });
 }
+function NotTok(){
+    if(ttkn && uye && uye.uid){
+        if(uyeDb.ttkn!=ttkn) UyeBilgileriKaydet(uye.uid,{'ntok':ttkn});
+    }
+}
 
 function KullaniciTipineGoreAyarlar(){
-    console.log(2123)
     if(uye===null){
         document.getElementById('link_uye_adi').innerHTML = '<img src="img/yukleniyor.svg">';
         document.getElementById('link_uye_ol').style.display='none';
@@ -76,7 +80,7 @@ function KullaniciTipineGoreAyarlar(){
             document.getElementById('link_uye_ol').style.display='none';
             document.getElementById('link_uye_giris').style.display='none';
             document.getElementById('link_uye_cikis').style.display='block';
-            if(uye.uid =='z1DkY3pkC4MAVkiHqal4wVikPuD3'){
+            if(admin){
                 document.getElementById('link_yeni_urun_olustur').style.display='block';
             }
         }
@@ -89,38 +93,40 @@ async function UyeBilgileri(){
     if(uye){
         const docRef = doc(collection(db, "uyeler"), uye.uid);
         const docSnap = await getDoc(docRef);
+        
+        document.getElementById('link_uye_adi').innerHTML = uye.uid.substr(0,5);
 
         if (docSnap.exists()) {
             uyeDb=docSnap.data();
-            if(uye.isAnonymous){
-                if(uyeDb['email']==undefined || uyeDb['uyeAdi']==undefined){
-                    setDoc(docRef, {'email':uye.uid.substr(0,5),'uyeAdi':uye.uid.substr(0,5),'son': serverTimestamp()}, { merge: true });
-                }
-            }else{
-                if(uyeDb['email']==undefined && uye.email){
-                    setDoc(docRef, {'email':uye.email,'son': serverTimestamp()}, { merge: true });
-                }
-                if(uyeDb['uyeAdi']==undefined){
-                    setDoc(docRef, {'email':uye.email.substr(0,5),'son': serverTimestamp()}, { merge: true });
-                }
-            }
             window.uyeDb=uyeDb;
             SiparisListesiGoster();
-            document.getElementById('link_uye_adi').innerHTML = uyeDb.uyeAdi;
+            document.getElementById('link_uye_adi').innerHTML = uyeDb.uyeAdi===undefined?uye.uid.substr(0,5):uyeDb.uyeAdi;
             window.YuklemeTamamlandi('uye');
+        }
 
-        } else {
-            setDoc(docRef, {'email':uye.uid.substr(0,5),'uyeAdi':uye.uid.substr(0,5),'son': serverTimestamp()}, { merge: true });
-            UyeBilgileri()
+        const docRef2 = doc(collection(doc(collection(db, "ayarlar"), 'ayarlar'),'adminler'),uye.uid);
+        const docSnap2 = await getDoc(docRef2);
+
+        if (docSnap2.exists()) {
+            admin=docSnap2.data()['isAdmin'];
+            window.vk.AramalarListesi();
+            KullaniciTipineGoreAyarlar();
         }
     }
 }
+
 async function UyeBilgileriKaydet(uye_uid,veri){
+
     if(uye_uid===null){
         uye_uid=uye.uid;
     }
+    veri.son=serverTimestamp();
+    
+    console.log('UyeBilgileriKaydet',uye_uid,veri);
+
     const docRef = doc(collection(db, "uyeler"), uye_uid);
-    setDoc(docRef, veri, { merge: true });
+    await setDoc(docRef, veri, { merge: true });
+    UyeBilgileri();
 }
 fb.UyeBilgileriKaydet=UyeBilgileriKaydet;
 
@@ -222,7 +228,7 @@ function EmailKayit(email,parola){
     createUserWithEmailAndPassword(auth, email, parola)
     .then((userCredential) => {
       const user = userCredential.user;
-        UyeBilgileriKaydet(user.uid,{'uyeAdi':document.getElementById('uye_yeni_isim').value});
+        UyeBilgileriKaydet(user.uid,{'uyeAdi':document.getElementById('uye_yeni_isim').value,'email':email});
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -236,13 +242,6 @@ function EmailKayit(email,parola){
 }
 window.fb.EmailKayit=EmailKayit;
 
-
-function NotTok(){
-    if(ttkn && uye && uye.uid){
-        const docRef = doc(db, "uyeler", uye.uid);
-        setDoc(docRef, {'ntok':ttkn,'email':uye.email,'son': serverTimestamp()}, { merge: true });
-    }
-}
 
 function convertTimestamp(timestamp) {
     if(timestamp===null) return 'Yeni';
@@ -260,9 +259,10 @@ function convertTimestamp(timestamp) {
     let m = date.getMinutes();
     m=m<10?'0'+m:m;
   
-    date = mm + '/' + dd + '/' + yyyy + ' '+h+':'+m;
+    date = dd + '/' + mm + '/' + yyyy + ' '+h+':'+m;
     return date;
 }
+window.fb.convertTimestamp=convertTimestamp;
 
 var urunler=[];
 function UrunleriGetir(){
@@ -438,9 +438,7 @@ async function SiparisListesiEkle(veri,detay){
     if(ekle===true) {
         uyeDb.siparis_listesi.push({'uid':veri,'adet':1});
     }
-    const docRef = doc(collection(db, "uyeler"), uye.uid);
-    const docSnap = await getDoc(docRef);
-    setDoc(docRef, {'siparis_listesi':uyeDb.siparis_listesi,'son': serverTimestamp()}, { merge: true });
+    UyeBilgileriKaydet(uye.uid,{'siparis_listesi':uyeDb.siparis_listesi});
     SiparisListesiGoster()
 }
 window.fb.SiparisListesiEkle=SiparisListesiEkle;

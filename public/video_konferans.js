@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getFirestore, doc, addDoc, query, orderBy, limit, onSnapshot , getDoc, setDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getMessaging, getToken  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-messaging.js";
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword,createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getStorage, ref, uploadString } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
@@ -44,7 +43,7 @@ let kayitDialog = null;
 let girisDialog = null;
 let gelenAramaDialog = null;
 
-async function AramaYap(){
+async function AramaYap(){ 
   await openUserMedia();
   createRoom()
 }
@@ -106,24 +105,20 @@ async function createRoom() {
   peerConnection = new RTCPeerConnection(configuration);
   registerPeerConnectionListeners();
   try {localStream.getTracks().forEach(track => { peerConnection.addTrack(track, localStream)}) } catch (error) {}
-  console.log('-1')
 
   const callerCandidatesCollection = collection(roomRef,'callerCandidates');
   peerConnection.addEventListener('icecandidate', event => {if (!event.candidate) {return} setDoc(callerCandidatesCollection,event.candidate.toJSON(), { merge: true }) });
-  console.log('1')
+
 
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
-  console.log('2')
+
 
   await setDoc(roomRef,{'offer': {type: offer.type, sdp: offer.sdp}});
   roomId = roomRef.id; 
   console.log('roomId',roomId);
 
-  console.log('3')
-
-  const aramaRef = await addDoc(collection(db, "aramalar"),{'arayan':uye.uid,'arayanAdi':uye.email,'aranan':aranan_uid,'arananAdi':'','oda':roomRef.id,'durum':null,tarih: serverTimestamp()});
-  console.log('4')
+  const aramaRef = await addDoc(collection(db, "aramalar"),{'arayan':uye.uid,'arayanAdi':(window.uyeDb && window.uyeDb.uyeAdi)?window.uyeDb.uyeAdi:uye.uid.substr(0,10),'aranan':aranan_uid,'arananAdi':'Kazdağı Doğal Taşlar','oda':roomRef.id,'durum':null,tarih: serverTimestamp()});
 
   peerConnection.addEventListener('track', event => {
     event.streams[0].getTracks().forEach(track => {
@@ -150,6 +145,35 @@ async function createRoom() {
   });
 
 }
+var aramalar=[];
+function AramalarListesi(){
+    const q = query(collection(db, "aramalar"),orderBy("tarih", "asc"),limit(20));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+        var html='';
+
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added" || change.type === "modified") {
+                var veri = change.doc.data();
+                veri.id = change.doc.id;
+                var ekle=true;
+                for (let i = 0; i < aramalar.length; i++) {
+                    if(aramalar[i].id===veri.id){
+                        ekle=false;
+                        break;
+                    }
+                }
+                if(ekle===true){
+                    aramalar.push(veri);
+                    html+='<a href="javascript:void(0)" id="link_uye_adi" class="w3-bar-item w3-button w3-padding" onclick="alert("sonra")">' + veri.arayanAdi + ' ' + window.fb.convertTimestamp( veri.tarih) + '</a>';
+                }
+   
+            }
+        });
+        console.log(aramalar);
+        document.getElementById('konferans_gecmisi').innerHTML='<div class="w3-bar-item w3-button w3-padding">Konferans Geçmişi</div> '+html+'<br><br>';
+    });
+}
+window.vk.AramalarListesi=AramalarListesi;
 
 
 async function joinRoomById(roomId) {
@@ -265,18 +289,8 @@ function registerPeerConnectionListeners() {
   });
 }
 
-function account(){
-  tumEkranlariKapat();
-  document.querySelector('#accPanel').style.display = '';
-}
 
-function tumEkranlariKapat(){
-  document.querySelector('#videoArama').style.display = 'none';
-  document.querySelector('#vitrin').style.display = 'none';
-  document.querySelector('#sl').style.display = 'none';
-  document.querySelector('#accPanel').style.display = 'none';
 
-}
 
 async function gelenArama(dId,odaId,arUid,arAdi) {
   const db = firebase.firestore();
