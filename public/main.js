@@ -290,7 +290,6 @@ function UrunleriGetir(){
                 //}               
             }
         });
-        console.log(urunler);
         UrunleriEkranaBas();
         window.YuklemeTamamlandi('urunler');
     });
